@@ -92,3 +92,43 @@
 
 </body>
 </html>
+
+<?php
+
+/* Add an User to the table. */
+function AddUser($connection, $name, $cellphone) {
+   $n = mysqli_real_escape_string($connection, $name);
+   $c = mysqli_real_escape_string($connection, $cellphone);
+
+   $query = "INSERT INTO USERS (NAME, CELLPHONE) VALUES ('$n', '$c');";
+
+   if(!mysqli_query($connection, $query)) echo("<p>Error adding employee data.</p>");
+}
+
+/* Check whether the table exists and, if not, create it. */
+function VerifyUsersTable($connection, $dbName) {
+  if(!TableExists("USERS", $connection, $dbName))
+  {
+     $query = "CREATE TABLE USERS (
+         ID int(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+         NAME VARCHAR(45),
+         CELLPHONE VARCHAR(90)
+       )";
+
+     if(!mysqli_query($connection, $query)) echo("<p>Error creating table.</p>");
+  }
+}
+
+/* Check for the existence of a table. */
+function TableExists($tableName, $connection, $dbName) {
+  $t = mysqli_real_escape_string($connection, $tableName);
+  $d = mysqli_real_escape_string($connection, $dbName);
+
+  $checktable = mysqli_query($connection,
+      "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_NAME = '$t' AND TABLE_SCHEMA = '$d'");
+
+  if(mysqli_num_rows($checktable) > 0) return true;
+
+  return false;
+}
+?>
